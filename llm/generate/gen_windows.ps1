@@ -406,13 +406,74 @@ function build_rocm() {
     }
 }
 
+function build_armv82($gen_arch) {
+    if ((-not "${env:OLLAMA_SKIP_CPU_GENERATE}" ) -and ((-not "${env:OLLAMA_CPU_TARGET}") -or ("${env:OLLAMA_CPU_TARGET}" -eq "armv82"))) {
+        # remaining llama.cpp builds use MSVC 
+        init_vars
+        $arch_c_flags="-march=armv8.2-a -fvectorize -ffp-model=fast -fno-finite-math-only"
+        $warn_c_flags="-Wno-format -Wno-unused-variable -Wno-unused-function -Wno-gnu-zero-variadic-macro-arguments -Wno-ignored-attributes"
+        $script:cmakeDefs = $script:commonCpuDefs + @(
+            "-G", "MinGW Makefiles"
+            "-DCMAKE_C_COMPILER=gcc.exe",
+            "-DCMAKE_CXX_COMPILER=g++.exe",
+            "-DCMAKE_C_FLAGS_INIT=${arch_c_flags} ${warn_c_flags}",
+            "-DCMAKE_CXX_FLAGS_INIT=${arch_c_flags} ${warn_c_flags}",
+            "-DBUILD_SHARED_LIBS=off",
+            "-DLLAMA_STATIC=on",
+            "-DLLAMA_AVX=off",
+            "-DLLAMA_AVX2=off",
+            "-DLLAMA_AVX512=off",
+            "-DLLAMA_FMA=off",
+            "-DLLAMA_F16C=off") + $script:cmakeDefs
+        $script:buildDir="../build/windows/${script:ARCH}/cpu_armv82"
+        $script:distDir="$script:DIST_BASE\cpu_armv82"
+        write-host "Building ARMv8.2-A CPU"
+        build
+        sign
+        install
+    } else {
+        write-host "Skipping ARMv8.2-A CPU generation step as requested"
+    }
+}
+
+function build_armv87($gen_arch) {
+    if ((-not "${env:OLLAMA_SKIP_CPU_GENERATE}" ) -and ((-not "${env:OLLAMA_CPU_TARGET}") -or ("${env:OLLAMA_CPU_TARGET}" -eq "armv87"))) {
+        # remaining llama.cpp builds use MSVC 
+        init_vars
+        $arch_c_flags="-march=armv8.7-a -fvectorize -ffp-model=fast -fno-finite-math-only"
+        $warn_c_flags="-Wno-format -Wno-unused-variable -Wno-unused-function -Wno-gnu-zero-variadic-macro-arguments -Wno-ignored-attributes"
+        $script:cmakeDefs = $script:commonCpuDefs + @(
+            "-G", "MinGW Makefiles"
+            "-DCMAKE_C_COMPILER=gcc.exe",
+            "-DCMAKE_CXX_COMPILER=g++.exe",
+            "-DCMAKE_C_FLAGS_INIT=${arch_c_flags} ${warn_c_flags}",
+            "-DCMAKE_CXX_FLAGS_INIT=${arch_c_flags} ${warn_c_flags}",
+            "-DBUILD_SHARED_LIBS=off",
+            "-DLLAMA_STATIC=on",
+            "-DLLAMA_AVX=off",
+            "-DLLAMA_AVX2=off",
+            "-DLLAMA_AVX512=off",
+            "-DLLAMA_FMA=off",
+            "-DLLAMA_F16C=off") + $script:cmakeDefs
+        $script:buildDir="../build/windows/${script:ARCH}/cpu_armv87"
+        $script:distDir="$script:DIST_BASE\cpu_armv87"
+        write-host "Building ARMv8.7-A CPU"
+        build
+        sign
+        install
+    } else {
+        write-host "Skipping ARMv8.7-A CPU generation step as requested"
+    }
+}
+
 init_vars
 if ($($args.count) -eq 0) {
     git_module_setup
     apply_patches
     build_static
     if ($script:ARCH -eq "arm64") {
-        build_cpu("ARM64")
+        #build_armv82
+        build_armv87
     } else { # amd64
         build_cpu("x64")
         build_cpu_avx

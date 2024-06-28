@@ -123,6 +123,7 @@ const (
 	CPUCapabilityNone CPUCapability = iota
 	CPUCapabilityAVX
 	CPUCapabilityAVX2
+	CPUCapabilityI8MM
 	// TODO AVX512
 )
 
@@ -132,6 +133,8 @@ func (c CPUCapability) String() string {
 		return "avx"
 	case CPUCapabilityAVX2:
 		return "avx2"
+	case CPUCapabilityI8MM:
+		return "i8mm"
 	default:
 		return "no vector extensions"
 	}

@@ -143,8 +143,15 @@ func serversForGpu(info gpu.GpuInfo) []string {
 
 // Return the optimal server for this CPU architecture
 func serverForCpu() string {
-	if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
-		return "metal"
+	if runtime.GOARCH == "arm64" {
+		if runtime.GOOS == "darwin" {
+			return "metal"
+		} else if runtime.GOOS == "windows" {
+
+		}
+	}
+	if runtime.GOARCH == "arm64" {
+		return "cpu_armv87"
 	}
 	variant := gpu.GetCPUCapability()
 	availableServers := availableServers()

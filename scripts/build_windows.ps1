@@ -30,7 +30,7 @@ function checkEnv() {
         $script:NVIDIA_DIR=$env:NVIDIA_DIR
     }
     
-    $script:INNO_SETUP_DIR=(get-item "C:\Program Files*\Inno Setup*\")[0]
+    #$script:INNO_SETUP_DIR=(get-item "C:\Program Files*\Inno Setup*\")[0]
 
     $script:DEPS_DIR="${script:SRC_DIR}\dist\windows-${script:TARGET_ARCH}"
     $env:CGO_ENABLED="1"
@@ -146,7 +146,7 @@ try {
     buildOllama
     buildApp
     gatherDependencies
-    buildInstaller
+    #buildInstaller
     distZip
 } catch {
     write-host "Build Failed"
