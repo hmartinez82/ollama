@@ -146,6 +146,9 @@ func serverForCpu() string {
 	if runtime.GOOS == "darwin" && runtime.GOARCH == "arm64" {
 		return "metal"
 	}
+	if runtime.GOARCH == "arm64" {
+		return "cpu_armv87"
+	}
 	variant := gpu.GetCPUCapability()
 	availableServers := availableServers()
 	if variant != gpu.CPUCapabilityNone {
